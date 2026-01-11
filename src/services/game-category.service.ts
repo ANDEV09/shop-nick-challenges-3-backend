@@ -22,6 +22,18 @@ class GameCategoryService {
         return await gameCategoryRepository.edit(id, data);
     };
 
+    public delete = async (id: string) => {
+        const category = await gameCategoryRepository.findById(id);
+        if (!category) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Danh mục không tồn tại!",
+            });
+        }
+
+        return await gameCategoryRepository.delete(id);
+    };
+
     public getAll = async () => {
         const result = await gameCategoryRepository.getAll();
 

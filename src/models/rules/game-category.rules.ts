@@ -36,3 +36,9 @@ export const editGameCategorySchema = z.object({
         id: z.string().uuid("ID danh mục không hợp lệ"),
     }),
 });
+
+export const deleteGameCategorySchema = z.object({
+    params: z.object({
+        id: z.string().uuid("ID danh mục không hợp lệ"),
+    }),
+});

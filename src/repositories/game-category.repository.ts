@@ -17,6 +17,12 @@ class GameCategoryRepository {
         });
     };
 
+    delete = async (id: string) => {
+        return prisma.gameCategories.delete({
+            where: { id },
+        });
+    };
+
     findById = async (id: string) => {
         const result = await prisma.gameCategories.findUnique({
             where: { id },
