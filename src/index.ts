@@ -8,6 +8,7 @@ import authRouter from "./routes/auth.routes";
 import redisClient from "./configs/redis";
 import { limiterMiddleware } from "./middlewares/common.middleware";
 import gameCategoryRouter from "~/routes/game-category.routes";
+import gameGroupRouter from "~/routes/game-group.routes";
 const app = express();
 const PORT = process.env.PORT || 8000;
 // parse body request
@@ -18,6 +19,7 @@ redisClient.connect();
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/game-categories", gameCategoryRouter);
+app.use("/game-groups", gameGroupRouter);
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);
 

@@ -1,0 +1,26 @@
+import z from "zod/v3";
+
+export const gameGroupSchema = z.object({
+    body: z.object({
+        title: z
+            .string()
+            .trim()
+            .min(1, "Tên danh mục không được để trống")
+            .max(30, "Tên danh mục không vượt quá 30 ký tự")
+            .nonempty(),
+        categoryId: z.string(),
+        thumbnail: z.string().url("Thumbnail phải là một URL hợp lệ"),
+        status: z
+            .number()
+            .refine((val) => val === 0 || val === 1, {
+                message: "Trạng thái không hợp lệ",
+            })
+            .default(1),
+    }),
+});
+
+export const getGameGroupsByCategorySchema = z.object({
+    params: z.object({
+        categoryId: z.string().uuid("Category ID không hợp lệ"),
+    }),
+});
