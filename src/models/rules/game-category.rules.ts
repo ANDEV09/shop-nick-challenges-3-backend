@@ -16,3 +16,23 @@ export const gameCategorySchema = z.object({
             .default(1),
     }),
 });
+
+export const editGameCategorySchema = z.object({
+    body: z.object({
+        name: z
+            .string()
+            .trim()
+            .min(1, "Tên danh mục không được để trống")
+            .max(30, "Tên danh mục không được vượt quá 30 ký tự")
+            .nonempty(),
+        status: z
+            .number()
+            .refine((val) => val === 0 || val === 1, {
+                message: "Trạng thái không hợp lệ",
+            })
+            .default(1),
+    }),
+    params: z.object({
+        id: z.string().uuid("ID danh mục không hợp lệ"),
+    }),
+});

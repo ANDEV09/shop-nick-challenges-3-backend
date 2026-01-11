@@ -1,4 +1,5 @@
 import prisma from "~/configs/prisma";
+import { EditGameCategoryRequestBody } from "~/models/requests/game-category.request";
 import GameCategory from "~/schemas/game-category.schema";
 
 class GameCategoryRepository {
@@ -7,6 +8,13 @@ class GameCategoryRepository {
             data: new GameCategory(data),
         });
         return result;
+    };
+
+    edit = async (id: string, data: EditGameCategoryRequestBody) => {
+        return prisma.gameCategories.update({
+            where: { id },
+            data,
+        });
     };
 
     findById = async (id: string) => {
