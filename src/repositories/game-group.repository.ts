@@ -1,4 +1,5 @@
 import prisma from "~/configs/prisma";
+import { EditGameGroupRequestBody } from "~/models/requests/game-group.request";
 import GameGroup from "~/schemas/game-group.schema";
 
 class GameGroupRepository {
@@ -21,6 +22,20 @@ class GameGroupRepository {
             where: { id },
         });
         return result;
+    };
+
+    edit = async (id: string, data: EditGameGroupRequestBody) => {
+        const result = await prisma.gameGroups.update({
+            where: { id },
+            data,
+        });
+        return result;
+    };
+
+    delete = async (id: string) => {
+        return prisma.gameGroups.delete({
+            where: { id },
+        });
     };
 
     getGameGroups = async (params: { categoryId: string }) => {
