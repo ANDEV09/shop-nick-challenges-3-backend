@@ -1,0 +1,36 @@
+import z from "zod/v3";
+
+export const gameAccountSchema = z.object({
+    body: z.object({
+        accountName: z.string().trim().min(1, "Tên đăng nhập không được để trống").max(255).nonempty(),
+        password: z.string().trim().min(1, "Mật khẩu không được để trống").nonempty(),
+        price: z.number().positive("Giá tiền phải lớn hơn 0"),
+        details: z.record(z.any()),
+        thumb: z.string().url("Thumbnail phải là một URL hợp lệ"),
+        images: z.array(z.string()),
+        description: z.string().optional(),
+        status: z
+            .number()
+            .int()
+            // 0 : chờ duyệt, 1 : đã bán, 2 : đã duyệt chưa bán
+            .refine((val) => val === 0 || val === 1 || val === 2, {
+                message: "Trạng thái không hợp lệ",
+            })
+            .default(0),
+    }),
+    params: z.object({
+        id: z.string().uuid("ID group không hợp lệ"),
+    }),
+});
+
+export const getGameAccountsSchema = z.object({
+    params: z.object({
+        groupId: z.string().uuid("Group ID không hợp lệ"),
+    }),
+});
+
+export const getOneAccountSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("Account ID không hợp lệ"),
+    }),
+});

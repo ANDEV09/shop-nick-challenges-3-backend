@@ -22,7 +22,10 @@ model User {
 
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
+
   passwordHistories PasswordHistory[]
+  seller     GameAccounts[]    @relation("seller_id")
+  buyer   GameAccounts[]    @relation("buyer_id")
 
   @@map("users")
 }
@@ -62,11 +65,34 @@ model GameGroups {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  // gameAccounts  GameAccounts[]
+  gameAccounts  GameAccounts[]
 
   category GameCategories @relation(fields: [categoryId], references: [id])
 
   @@map("game_groups")
+}
+
+model GameAccounts {
+  id          String    @id @default(uuid())
+  groupId     String    @map("group_id") @db.VarChar(255)
+  sellerId    String?    @map("seller_id") @db.VarChar(255)
+  buyerId     String?   @map("buyer_id") @db.VarChar(255)
+  accountName String    @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  price       Int
+  description String    @db.VarChar(255)
+  status      Int       @default(0)
+  details     Json      
+  thumb       String    @db.VarChar(255)
+  images      Json     
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  group       GameGroups @relation(fields: [groupId], references: [id])
+  buyer        User?      @relation("buyer_id", fields: [buyerId], references: [id])
+  seller      User?       @relation("seller_id", fields: [sellerId], references: [id])
+
+  @@map("game_accounts")
 }
 
 enum Role {
