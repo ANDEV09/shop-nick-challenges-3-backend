@@ -39,6 +39,11 @@ class GameCategoryService {
 
         return result;
     };
+
+    public getAllAdmin = async () => {
+        const result = await gameCategoryRepository.getAllAdmin();
+        return result;
+    };
 }
 
 const gameCategoryService = new GameCategoryService();

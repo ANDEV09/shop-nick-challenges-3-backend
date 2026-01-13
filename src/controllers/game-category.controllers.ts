@@ -68,3 +68,15 @@ export const getAllGameCategories = async (req: Request, res: Response, next: Ne
         return next(error);
     }
 };
+
+export const getAllGameCategorysAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await gameCategoryService.getAllAdmin();
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy tất cả danh mục (admin) thành công",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

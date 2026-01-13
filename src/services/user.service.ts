@@ -151,10 +151,15 @@ class AuthService {
         type: TokenType;
         expiresIn?: number;
     }) => {
-        return AlgoJwt.signToken({
-            payload: { type, userId },
-            options: { expiresIn: expiresIn * 1000 }, // convert seconds to mili seconds
-        }) as Promise<string>;
+        // Lấy role từ DB
+        return (async () => {
+            const user = await userRespository.findById(userId);
+            const role = user?.role || "USER";
+            return AlgoJwt.signToken({
+                payload: { type, userId, role },
+                options: { expiresIn: expiresIn * 1000 }, // convert seconds to mili seconds
+            }) as Promise<string>;
+        })();
     };
 
     private signAccesAndRefreshToken = async (userId: string) => {
