@@ -1,6 +1,7 @@
 import prisma from "~/configs/prisma";
 import { EditGameGroupRequestBody } from "~/models/requests/game-group.request";
 import GameGroup from "~/schemas/game-group.schema";
+import { paginate } from "~/utils/pagination";
 
 class GameGroupRepository {
     create = async (data: { categoryId: string; title: string; slug: string; thumbnail: string; status: number }) => {
@@ -44,6 +45,21 @@ class GameGroupRepository {
             where: {
                 categoryId: categoryId,
                 active: 1,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return result;
+    };
+
+    getAllAdmin = async (params: { categoryId: string; page?: number; limit?: number }) => {
+        const { categoryId, page, limit } = params;
+        const result = await paginate<any>(prisma.gameGroups, {
+            page,
+            limit,
+            where: {
+                categoryId: categoryId,
             },
             orderBy: {
                 createdAt: "desc",

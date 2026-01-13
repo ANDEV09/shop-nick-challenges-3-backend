@@ -63,6 +63,11 @@ class GameGroupService {
 
         return await gameGroupRepository.getGameGroups({ categoryId });
     };
+    
+    public getAllAdmin = async (categoryId: string, page?: number, limit?: number) => {
+        const result = await gameGroupRepository.getAllAdmin({ categoryId, page, limit });
+        return result;
+    };
 }
 
 const gameGroupService = new GameGroupService();
