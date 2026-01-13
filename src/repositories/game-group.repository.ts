@@ -44,7 +44,7 @@ class GameGroupRepository {
         const result = await prisma.gameGroups.findMany({
             where: {
                 categoryId: categoryId,
-                active: 1,
+                status: 1,
             },
             orderBy: {
                 createdAt: "desc",

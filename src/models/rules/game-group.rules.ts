@@ -37,7 +37,7 @@ export const editGameGroupSchema = z.object({
             .default(1),
     }),
     params: z.object({
-        id: z.string().uuid("ID category không hợp lệ"),
+        id: z.string().uuid("ID group không hợp lệ"),
     }),
 });
 
@@ -48,6 +48,12 @@ export const delCategoryParamsSchema = z.object({
 });
 
 export const getGameGroupsByCategorySchema = z.object({
+    params: z.object({
+        categoryId: z.string().uuid("Category ID không hợp lệ"),
+    }),
+});
+
+export const getGameGroupsAdminSchema = z.object({
     params: z.object({
         categoryId: z.string().uuid("Category ID không hợp lệ"),
     }),

@@ -5,6 +5,7 @@ import {
     delCategoryParamsSchema,
     editGameGroupSchema,
     gameGroupSchema,
+    getGameGroupsAdminSchema,
     getGameGroupsByCategorySchema,
 } from "~/models/rules/game-group.rules";
 import { validate } from "~/utils/validation";
@@ -19,6 +20,11 @@ gameGroupRouter.delete("/:id", checkAdmin, validate(delCategoryParamsSchema), ga
 
 gameGroupRouter.get("/groups/:categoryId", validate(getGameGroupsByCategorySchema), gameGroupController.getGameGroups);
 
-gameGroupRouter.get("/admin/groups/:categoryId", checkAdmin, gameGroupController.getAllGameGroupsAdmin);
+gameGroupRouter.get(
+    "/admin/groups/:categoryId",
+    validate(getGameGroupsAdminSchema),
+    checkAdmin,
+    gameGroupController.getAllGameGroupsAdmin,
+);
 
 export default gameGroupRouter;

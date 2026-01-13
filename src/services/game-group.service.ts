@@ -63,8 +63,15 @@ class GameGroupService {
 
         return await gameGroupRepository.getGameGroups({ categoryId });
     };
-    
+
     public getAllAdmin = async (categoryId: string, page?: number, limit?: number) => {
+        const categoryExisted = await gameGroupRepository.findByCategoryId(categoryId);
+        if (!categoryExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Danh mục này không tồn tại trong hệ thống!",
+            });
+        }
         const result = await gameGroupRepository.getAllAdmin({ categoryId, page, limit });
         return result;
     };
