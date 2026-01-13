@@ -1,3 +1,4 @@
+import { describe } from "node:test";
 import z from "zod/v3";
 
 export const gameAccountSchema = z.object({
@@ -20,6 +21,27 @@ export const gameAccountSchema = z.object({
     }),
     params: z.object({
         id: z.string().uuid("ID group không hợp lệ"),
+    }),
+});
+
+export const editGameAccountSchema = z.object({
+    body: z.object({
+        accountName: z.string().trim().min(1).max(255).nonempty(),
+        password: z.string().trim().min(1).max(255).nonempty(),
+        price: z.number().positive("Giá tiền phải lớn hơn 0"),
+        details: z.string().optional(),
+        description: z.string().optional(),
+        thumb: z.string().url("Thumbnail phải là một URL hợp lệ"),
+        images: z.string(),
+    }),
+    params: z.object({
+        id: z.string().uuid("ID account không hợp lệ"),
+    }),
+});
+
+export const deleteGameAccountSchema = z.object({
+    params: z.object({
+        id: z.string().uuid("ID account không hợp lệ"),
     }),
 });
 

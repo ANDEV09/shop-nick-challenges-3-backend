@@ -1,6 +1,6 @@
 import { HTTP_STATUS } from "~/constants/httpStatus";
 import { ErrorWithStatus } from "~/models/Error";
-import { CreateGameAccountRequestBody } from "~/models/requests/game-account.request";
+import { CreateGameAccountRequestBody, EditGameAccountRequestBody } from "~/models/requests/game-account.request";
 import gameAccountRepository from "~/repositories/game-account.repository";
 
 class GameAccountService {
@@ -16,8 +16,38 @@ class GameAccountService {
         return await gameAccountRepository.create(id, data);
     };
 
+    public edit = async (id: string, data: EditGameAccountRequestBody) => {
+        const accountExisted = await gameAccountRepository.findByAccountId(id);
+        if (!accountExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Account này không tồn tại trong hệ thống!",
+            });
+        }
+
+        return await gameAccountRepository.edit(id, data);
+    };
+
+    public delete = async (id: string) => {
+        const gameAccountExisted = await gameAccountRepository.findByAccountId(id);
+        if (!gameAccountExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Tài khoản không tồn tại trong hệ thống!",
+            });
+        }
+
+        if (gameAccountExisted.status === 1) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: "Không thể xóa account đã bán!",
+            });
+        }
+
+        return await gameAccountRepository.delete(id);
+    };
+
     public getAccounts = async (groupId: string, page?: number, limit?: number) => {
-        // 1. Kiểm tra group có tồn tại không
         const groupExists = await gameAccountRepository.findByGroupId(groupId);
         if (!groupExists) {
             throw new ErrorWithStatus({

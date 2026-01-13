@@ -1,6 +1,6 @@
 import { de } from "zod/locales";
 import prisma from "~/configs/prisma";
-import { CreateGameAccountRequestBody } from "~/models/requests/game-account.request";
+import { CreateGameAccountRequestBody, EditGameAccountRequestBody } from "~/models/requests/game-account.request";
 import GameAccount from "~/schemas/game-account.schema";
 import { paginate } from "~/utils/pagination";
 
@@ -24,11 +24,25 @@ class GameAccountRepository {
         return result;
     };
 
+    edit = async (id: string, data: EditGameAccountRequestBody) => {
+        const result = await prisma.gameAccounts.update({
+            where: { id },
+            data,
+        });
+        return result;
+    };
+
     findByAccountId = async (id: string) => {
         const result = await prisma.gameAccounts.findUnique({
             where: { id },
         });
         return result;
+    };
+
+    delete = async (id: string) => {
+        return prisma.gameAccounts.delete({
+            where: { id },
+        });
     };
 
     getAllByGroupId = async (params: { groupId: string; page?: number; limit?: number }) => {
