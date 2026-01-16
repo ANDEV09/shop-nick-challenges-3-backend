@@ -10,32 +10,48 @@ import {
 
 import { validate } from "~/utils/validation";
 import { auth } from "~/middlewares/auth.middlewares";
+import { checkAdmin } from "~/middlewares/checkAdmin.middlewares";
 
 const gameAccountRouter = Router();
 
+gameAccountRouter.get("/accounts/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
+
+// mua tài khoản
+gameAccountRouter.post("/:id/purchase", auth, gameAccountController.purchaseGameAccount);
+
+gameAccountRouter.get("/my-purchased", auth, gameAccountController.getMyPurchasedAccounts);
+
+// get one account
+gameAccountRouter.get("/detail/:id", validate(getOneAccountSchema), gameAccountController.getAccountDetail);
+
+// đăng bán account cho user (status: 0 - chờ duyệt)
+gameAccountRouter.post("/:id/account", auth, validate(gameAccountSchema), gameAccountController.createGameAccount);
+
 gameAccountRouter.post(
-    "/:id/account",
-
-    auth,
-
+    "/:id/admin-account",
+    checkAdmin,
     validate(gameAccountSchema),
-    gameAccountController.createGameAccount,
+    gameAccountController.adminCreateGameAccount,
 );
 
-gameAccountRouter.post("/:id/admin-account", validate(gameAccountSchema), gameAccountController.adminCreateGameAccount);
-
-gameAccountRouter.put("/account-detail/:id", validate(editGameAccountSchema), gameAccountController.editGameAccount);
+gameAccountRouter.put(
+    "/account-detail/:id",
+    checkAdmin,
+    validate(editGameAccountSchema),
+    gameAccountController.editGameAccount,
+);
 
 gameAccountRouter.delete(
     "/account/:id",
-
+    checkAdmin,
     validate(deleteGameAccountSchema),
     gameAccountController.deleteGameAccount,
 );
 
-gameAccountRouter.get("/accounts/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
+// Admin: Lấy chi tiết 1 account đầy đủ thông tin
+gameAccountRouter.get("/admin/account/:id", checkAdmin, gameAccountController.getAccountDetailAdmin);
 
-// get one account
-gameAccountRouter.get("/detail/:id", validate(getOneAccountSchema), gameAccountController.getAccountDetail);
+// get danh sách acc đã bán admin
+gameAccountRouter.get("/admin/sold-history", checkAdmin, gameAccountController.getSoldAccountsHistoryAdmin);
 
 export default gameAccountRouter;
