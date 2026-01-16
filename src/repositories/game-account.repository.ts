@@ -200,6 +200,26 @@ class GameAccountRepository {
             },
         });
     };
+
+    getMySellingAccounts = async (params: { sellerId: string; page?: number; limit?: number }) => {
+        const { sellerId, page, limit } = params;
+        return paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where: { sellerId },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                price: true,
+                status: true,
+                thumb: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                buyerId: true,
+            },
+        });
+    };
 }
 
 const gameAccountRepository = new GameAccountRepository();

@@ -89,7 +89,7 @@ class GameAccountService {
             });
         }
 
-        // 3. Lấy thông tin user (buyer)
+        // 3. Lấy thông tin user
         const user = await userRespository.findById(userId);
         if (!user) {
             throw new ErrorWithStatus({
@@ -106,19 +106,11 @@ class GameAccountService {
             });
         }
 
-        // 5. Thực hiện mua (cập nhật account)
         const result = await gameAccountRepository.purchase(accountId, userId);
+        // 5. Thực hiện mua (trong transaction để đảm bảo data consistency)
 
-        // 6. Trừ tiền buyer
+        // 6. Trừ tiền user
         await userRespository.updateBalance(userId, user.balance - account.price);
-
-        // 7. Cộng tiền cho seller (nếu tồn tại)
-        if (account.sellerId) {
-            const seller = await userRespository.findById(account.sellerId);
-            if (seller) {
-                await userRespository.updateBalance(account.sellerId, seller.balance + account.price);
-            }
-        }
 
         return result;
     };
@@ -164,6 +156,28 @@ class GameAccountService {
 
     public getSoldAccountsHistoryAdmin = async (page?: number, limit?: number) => {
         return gameAccountRepository.getSoldAccountsHistoryAdmin({ page, limit });
+    };
+
+    public getMySellingAccounts = async (sellerId: string, page?: number, limit?: number) => {
+        return gameAccountRepository.getMySellingAccounts({ sellerId, page, limit });
+    };
+
+    public editAccountUser = async (id: string, userId: string, data: EditGameAccountRequestBody) => {
+        const accountExisted = await gameAccountRepository.findByAccountId(id);
+        if (!accountExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Account này không tồn tại trong hệ thống!",
+            });
+        }
+        if (accountExisted.sellerId !== userId) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.FORBIDDEN,
+                message: "Bạn không có quyền chỉnh sửa account này!",
+            });
+        }
+
+        return await gameAccountRepository.edit(id, data);
     };
 }
 

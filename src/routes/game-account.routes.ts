@@ -54,4 +54,6 @@ gameAccountRouter.get("/admin/account/:id", checkAdmin, gameAccountController.ge
 // get danh sách acc đã bán admin
 gameAccountRouter.get("/admin/sold-history", checkAdmin, gameAccountController.getSoldAccountsHistoryAdmin);
 
+
+
 export default gameAccountRouter;

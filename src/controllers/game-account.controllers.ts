@@ -184,3 +184,37 @@ export const getSoldAccountsHistoryAdmin = async (req: Request, res: Response, n
         return next(error);
     }
 };
+
+export const getMySellerAccounts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId!;
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+        const result = await gameAccountService.getMySellingAccounts(userId, page, limit);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách account đã đăng bán thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const editGameAccountUser = async (
+    req: Request<ParamsDictionary, any, EditGameAccountRequestBody>,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const accountId = req.params.id;
+        const userId = req.userId!;
+        const result = await gameAccountService.editAccountUser(accountId, userId, req.body);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Cập nhật account thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
