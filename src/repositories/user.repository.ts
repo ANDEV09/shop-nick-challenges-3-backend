@@ -37,6 +37,13 @@ class UserRepository {
         return result;
     };
 
+    updateBalance = async (userId: string, newBalance: number) => {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { balance: newBalance },
+        });
+    };
+
     findTokenResetPassword = async (token: string) => {
         const result = await prisma.user.findUnique({
             where: { forgotEmailToken: token },

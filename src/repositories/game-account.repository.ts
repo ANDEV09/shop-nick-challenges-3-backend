@@ -17,6 +17,19 @@ class GameAccountRepository {
         return result;
     };
 
+    adminCreate = async (groupId: string, data: CreateGameAccountRequestBody) => {
+        const gameAccount = new GameAccount({
+            ...data,
+            groupId,
+            images: JSON.stringify(data.images),
+            status: 1,
+        });
+        const result = await prisma.gameAccounts.create({
+            data: gameAccount,
+        });
+        return result;
+    };
+
     findByGroupId = async (id: string) => {
         const result = await prisma.gameGroups.findUnique({
             where: { id },
@@ -80,6 +93,109 @@ class GameAccountRepository {
                 createdAt: true,
                 updatedAt: true,
                 // KHÔNG select: accountName, password, buyerId, sellerId
+            },
+        });
+    };
+
+    purchase = async (accountId: string, buyerId: string) => {
+        return prisma.gameAccounts.update({
+            where: { id: accountId },
+            data: {
+                buyerId,
+                status: 1, // 1 = đã bán
+            },
+        });
+    };
+
+    getMyPurchasedAccounts = async (userId: string) => {
+        const result = await prisma.gameAccounts.findMany({
+            where: { buyerId: userId },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                accountName: true,
+                password: true,
+                price: true,
+                status: true,
+                thumb: true,
+                images: true,
+                details: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+
+        return result;
+    };
+
+    getAllByGroupIdAdmin = async (params: { groupId: string; page?: number; limit?: number }) => {
+        const { groupId, page, limit } = params;
+        return paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where: { groupId, status: 0 },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                details: true,
+                status: true,
+                thumb: true,
+                images: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+            },
+        });
+    };
+
+    getAccountDetailAdmin = async (accountId: string) => {
+        return prisma.gameAccounts.findUnique({
+            where: { id: accountId },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                status: true,
+                thumb: true,
+                images: true,
+                details: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+                buyerId: true,
+                sellerId: true,
+            },
+        });
+    };
+
+    getSoldAccountsHistoryAdmin = async (params: { page?: number; limit?: number }) => {
+        const { page, limit } = params;
+        return paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where: { status: 1 },
+            orderBy: { updatedAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                details: true,
+                status: true,
+                thumb: true,
+                images: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+                buyerId: true,
+                sellerId: true,
+
+                user: true,
             },
         });
     };

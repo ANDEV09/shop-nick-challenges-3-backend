@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as gameAccountController from "~/controllers/game-account.controllers";
+import { adminCreateGameAccount } from "~/controllers/game-account.controllers";
 import {
     deleteGameAccountSchema,
     editGameAccountSchema,
@@ -19,6 +20,8 @@ gameAccountRouter.post(
     gameAccountController.createGameAccount,
 );
 
+gameAccountRouter.post("/:id/admin-account", validate(gameAccountSchema), gameAccountController.adminCreateGameAccount);
+
 gameAccountRouter.put("/account-detail/:id", validate(editGameAccountSchema), gameAccountController.editGameAccount);
 
 gameAccountRouter.delete(
@@ -28,7 +31,7 @@ gameAccountRouter.delete(
     gameAccountController.deleteGameAccount,
 );
 
-gameAccountRouter.get("/group/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
+gameAccountRouter.get("/accounts/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
 
 // get one account
 gameAccountRouter.get("/detail/:id", validate(getOneAccountSchema), gameAccountController.getAccountDetail);
