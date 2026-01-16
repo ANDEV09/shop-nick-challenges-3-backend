@@ -5,10 +5,11 @@ import GameAccount from "~/schemas/game-account.schema";
 import { paginate } from "~/utils/pagination";
 
 class GameAccountRepository {
-    create = async (groupId: string, data: CreateGameAccountRequestBody) => {
+    create = async (groupId: string, userId: string, data: CreateGameAccountRequestBody) => {
         const gameAccount = new GameAccount({
             ...data,
             groupId,
+            sellerId: userId,
             images: JSON.stringify(data.images),
         });
         const result = await prisma.gameAccounts.create({

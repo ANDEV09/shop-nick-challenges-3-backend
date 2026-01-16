@@ -5,7 +5,7 @@ import gameAccountRepository from "~/repositories/game-account.repository";
 import userRespository from "~/repositories/user.repository";
 
 class GameAccountService {
-    public create = async (id: string, data: CreateGameAccountRequestBody) => {
+    public create = async (id: string, userId: string, data: CreateGameAccountRequestBody) => {
         const gameGroupExisted = await gameAccountRepository.findByGroupId(id);
         if (!gameGroupExisted) {
             throw new ErrorWithStatus({
@@ -14,7 +14,7 @@ class GameAccountService {
             });
         }
 
-        return await gameAccountRepository.create(id, data);
+        return await gameAccountRepository.create(id, userId, data);
     };
 
     public adminCreate = async (id: string, data: CreateGameAccountRequestBody) => {
@@ -89,7 +89,7 @@ class GameAccountService {
             });
         }
 
-        // 3. Lấy thông tin user
+        // 3. Lấy thông tin user (buyer)
         const user = await userRespository.findById(userId);
         if (!user) {
             throw new ErrorWithStatus({
@@ -106,11 +106,19 @@ class GameAccountService {
             });
         }
 
-        // 5. Thực hiện mua (trong transaction để đảm bảo data consistency)
+        // 5. Thực hiện mua (cập nhật account)
         const result = await gameAccountRepository.purchase(accountId, userId);
 
-        // 6. Trừ tiền user
+        // 6. Trừ tiền buyer
         await userRespository.updateBalance(userId, user.balance - account.price);
+
+        // 7. Cộng tiền cho seller (nếu tồn tại)
+        if (account.sellerId) {
+            const seller = await userRespository.findById(account.sellerId);
+            if (seller) {
+                await userRespository.updateBalance(account.sellerId, seller.balance + account.price);
+            }
+        }
 
         return result;
     };

@@ -1,6 +1,5 @@
 import { Router } from "express";
 import * as gameAccountController from "~/controllers/game-account.controllers";
-import { adminCreateGameAccount } from "~/controllers/game-account.controllers";
 import {
     deleteGameAccountSchema,
     editGameAccountSchema,
@@ -10,11 +9,14 @@ import {
 } from "~/models/rules/game-account.rules";
 
 import { validate } from "~/utils/validation";
+import { auth } from "~/middlewares/auth.middlewares";
 
 const gameAccountRouter = Router();
 
 gameAccountRouter.post(
     "/:id/account",
+
+    auth,
 
     validate(gameAccountSchema),
     gameAccountController.createGameAccount,

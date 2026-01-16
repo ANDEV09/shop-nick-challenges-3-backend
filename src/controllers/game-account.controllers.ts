@@ -16,7 +16,8 @@ export const createGameAccount = async (
 ) => {
     try {
         const groupId = req.params.id;
-        const result = await gameAccountService.create(groupId, req.body);
+        const userId = req.userId!;
+        const result = await gameAccountService.create(groupId, userId, req.body);
 
         return res.status(HTTP_STATUS.CREATED).json({
             message: "Thêm account thành công!",
