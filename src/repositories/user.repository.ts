@@ -22,9 +22,10 @@ class UserRepository {
         });
         return result;
     };
-    findById = async (id: string) => {
+    findById = async (id: string, select?: Partial<Record<keyof User, boolean>>) => {
         const result = await prisma.user.findUnique({
             where: { id },
+            select,
         });
         return result;
     };
@@ -66,6 +67,20 @@ class UserRepository {
         });
         return result;
     };
+
+    updateTokenVerify = async (userId: string, token: string) => {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { emailVerifyToken: token },
+        });
+    };
+
+    // verifyEmail = async (userId: string, token: string) => {
+    //     return prisma.user.update({
+    //         where: { id: userId, verify: 0, emailVerifyToken: token },
+    //         data: { emailVerifyToken: null, verify: 1 },
+    //     });
+    // };
 }
 const userRespository = new UserRepository();
 export default userRespository;

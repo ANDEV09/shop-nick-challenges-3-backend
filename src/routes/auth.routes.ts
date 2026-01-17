@@ -21,7 +21,7 @@ const authRouter = Router();
 authRouter.post("/register", validate(registerSchema), authController.register);
 authRouter.post("/login", validate(loginSchema), authController.login);
 authRouter.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
-authRouter.get("/verify-email/:token", validate(verifyEmailParamsSchema), authController.verifyEmail);
+// authRouter.get("/verify-email/:token", validate(verifyEmailParamsSchema), authController.verifyEmail);
 authRouter.post(
     "/refresh-token",
     validate(refreshTokenSchema),

@@ -1,12 +1,6 @@
 import z from "zod/v3";
 const jwtSchema = z.string().regex(/^[^.]+\.[^.]+\.[^.]+$/, "Token không hợp lệ!");
-const passwordSchema = z
-    .string()
-    .min(4, "Password phải >= 4 ký tự")
-    .regex(
-        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_+=\-]).{8,}$/,
-        "Password phải chứa ít nhất 1 chữ hoa, 1 số, 1 ký tự đặc biệt",
-    );
+const passwordSchema = z.string().min(4, "Password phải >= 4 ký tự");
 export const registerSchema = z.object({
     body: z
         .object({
@@ -82,5 +76,3 @@ export const refreshTokenSchema = z.object({
         token: jwtSchema,
     }),
 });
-
-z

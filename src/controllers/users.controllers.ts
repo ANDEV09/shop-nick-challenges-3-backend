@@ -24,7 +24,6 @@ export const register = async (
         const result = await userService.create(req.body);
         return res.status(HTTP_STATUS.CREATED).json({
             message: "Bạn đã đăng ký tài khoản thành công trên hệ thống!",
-            result,
         });
     } catch (error) {
         return next(error);
@@ -89,18 +88,17 @@ export const resetPassword = async (
         return next(error);
     }
 };
-export const verifyEmail = async (req: Request<VerifyEmailRequestParams>, res: Response, next: NextFunction) => {
-    const { token } = req.params;
-    const { password } = req.body;
-    try {
-        await userService.resetPassword(token, password);
-        return res.status(HTTP_STATUS.OK).json({
-            message: "Đã đặt lại mật khẩu thành công!",
-        });
-    } catch (error) {
-        return next(error);
-    }
-};
+// export const verifyEmail = async (req: Request<VerifyEmailRequestParams>, res: Response, next: NextFunction) => {
+//     const { token } = req.params;
+//     try {
+//         await userService.verifyEmail(token);
+//         return res.status(HTTP_STATUS.OK).json({
+//             message: "Đã xác thực email thành công!",
+//         });
+//     } catch (error) {
+//         return next(error);
+//     }
+// };
 export const changePassword = async (
     req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
     res: Response,

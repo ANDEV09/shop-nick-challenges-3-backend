@@ -8,6 +8,8 @@ import { ForgotPasswordRequestBody, LoginRequestBody, RegisterRequestBody } from
 import Helpers from "~/utils/helpers";
 import redisClient from "~/configs/redis";
 import pwsHisRepository from "~/repositories/password-history.repository";
+import mailer from "~/utils/mailer";
+import { userInfo } from "os";
 
 class AuthService {
     public create = async (data: RegisterRequestBody) => {
@@ -47,7 +49,28 @@ class AuthService {
 
         // Lưu mk người dùng vô bảng lịch sử
         await pwsHisRepository.save(result.id, passwordHash);
-
+        const tokenVerify = await this.signToken({
+            userId: result.id,
+            type: TokenType.EmailVerifyToken,
+            expiresIn: ExpiresInTokenType.EmailVerifyToken,
+        });
+        // const verificationLink = `${process.env.CLIENT_URL}/verify-email/${tokenVerify}`;
+        // await mailer.sendMail({
+        //     to: email,
+        //     subject: "Xác minh tài khoản của bạn trên hệ thống " + process.env.APP_NAME,
+        //     recipient_name: result.username,
+        //     main_content_html: `
+        //         <p style="margin-bottom: 25px;">Cảm ơn bạn đã đăng ký tài khoản <b>${process.env.APP_NAME}</b>. Tài khoản của bạn hiện chưa được kích hoạt.</p>
+        //         <p>Vui lòng nhấp vào nút bên dưới để <b>xác minh địa chỉ email</b> và hoàn tất quá trình đăng ký.</p>
+        //         <p style="font-style: italic; color: #cc0000;">Lưu ý: Liên kết này sẽ hết hạn sau 24 giờ.</p>
+        //     `,
+        //     sub_content_html: `
+        //         <p>Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.</p>
+        //     `,
+        //     cta_text: "Xác minh ngay",
+        //     url: verificationLink,
+        // });
+        await userRespository.updateTokenVerify(result.id, tokenVerify);
         return await this.signAccesAndRefreshToken(result.id);
     };
 
@@ -142,6 +165,24 @@ class AuthService {
         await userRespository.changePassword(userId, passwordHash);
     };
 
+    // public verifyEmail = async (token: string) => {
+    //     try {
+    //         const payload = await AlgoJwt.verifyToken({ token });
+    //         if (payload.type !== TokenType.EmailVerifyToken) {
+    //             throw new ErrorWithStatus({
+    //                 status: HTTP_STATUS.UNAUTHORIZED,
+    //                 message: "Token không chính xác!",
+    //             });
+    //         }
+    //         return await userRespository.verifyEmail(payload.userId, token);
+    //     } catch {
+    //         throw new ErrorWithStatus({
+    //             status: HTTP_STATUS.UNAUTHORIZED,
+    //             message: "Token không thể xác minh!",
+    //         });
+    //     }
+    // };
+
     private signToken = ({
         userId,
         type,
@@ -178,7 +219,15 @@ class AuthService {
         // Lưu lại refresh token vào redis
         await redisClient.set(`refreshToken:${userId}`, refreshToken, ExpiresInTokenType.RefreshToken);
 
+        const userInfo = await userRespository.findById(userId, {
+            username: true,
+            email: true,
+            role: true,
+            balance: true,
+        });
+
         return {
+            userInfo,
             access_token: accessToken,
             refresh_token: refreshToken,
         };
