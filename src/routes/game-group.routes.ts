@@ -18,7 +18,7 @@ gameGroupRouter.put("/:id", checkAdmin, validate(editGameGroupSchema), gameGroup
 
 gameGroupRouter.delete("/:id", checkAdmin, validate(delCategoryParamsSchema), gameGroupController.deleteGameGroup);
 
-gameGroupRouter.get("/groups/:categoryId", validate(getGameGroupsByCategorySchema), gameGroupController.getGameGroups);
+gameGroupRouter.get("/:categoryId", validate(getGameGroupsByCategorySchema), gameGroupController.getGameGroups);
 
 gameGroupRouter.get(
     "/admin/groups/:categoryId",

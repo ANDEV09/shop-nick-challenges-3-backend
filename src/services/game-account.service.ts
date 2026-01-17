@@ -128,7 +128,6 @@ class GameAccountService {
                 status: HTTP_STATUS.NOT_FOUND,
             });
         }
-
         return account;
     };
 
@@ -180,6 +179,5 @@ class GameAccountService {
         return await gameAccountRepository.edit(id, data);
     };
 }
-
 const gameAccountService = new GameAccountService();
 export default gameAccountService;
