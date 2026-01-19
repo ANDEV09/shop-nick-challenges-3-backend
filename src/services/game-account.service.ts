@@ -106,12 +106,19 @@ class GameAccountService {
             });
         }
 
+        // 5. Thực hiện mua
         const result = await gameAccountRepository.purchase(accountId, userId);
-        // 5. Thực hiện mua (trong transaction để đảm bảo data consistency)
 
         // 6. Trừ tiền user
         await userRespository.updateBalance(userId, user.balance - account.price);
 
+        // 7. Nếu có sellerId, cộng tiền cho người bán
+        if (account.sellerId) {
+            const seller = await userRespository.findById(account.sellerId);
+            if (seller) {
+                await userRespository.updateBalance(account.sellerId, seller.balance + account.price);
+            }
+        }
         return result;
     };
 

@@ -23,7 +23,7 @@ class GameAccountRepository {
             ...data,
             groupId,
             images: JSON.stringify(data.images),
-            status: 1,
+            status: 2,
         });
         const result = await prisma.gameAccounts.create({
             data: gameAccount,
@@ -65,7 +65,7 @@ class GameAccountRepository {
         const result = await paginate<any>(prisma.gameAccounts, {
             page,
             limit,
-            where: { groupId },
+            where: { groupId, status: 2 },
             orderBy: { createdAt: "desc" },
             select: {
                 id: true,

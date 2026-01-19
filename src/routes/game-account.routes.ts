@@ -14,7 +14,8 @@ import { checkAdmin } from "~/middlewares/checkAdmin.middlewares";
 
 const gameAccountRouter = Router();
 
-gameAccountRouter.get("/accounts/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
+// get danh sách account theo group role user
+gameAccountRouter.get("/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
 
 // mua tài khoản
 gameAccountRouter.post("/:id/purchase", auth, gameAccountController.purchaseGameAccount);
@@ -53,7 +54,5 @@ gameAccountRouter.get("/admin/account/:id", checkAdmin, gameAccountController.ge
 
 // get danh sách acc đã bán admin
 gameAccountRouter.get("/admin/sold-history", checkAdmin, gameAccountController.getSoldAccountsHistoryAdmin);
-
-
 
 export default gameAccountRouter;
