@@ -72,7 +72,6 @@ class GameAccountService {
     };
 
     purchaseAccount = async (accountId: string, userId: string) => {
-        // 1. Kiểm tra account có tồn tại không
         const account = await gameAccountRepository.findByAccountId(accountId);
         if (!account) {
             throw new ErrorWithStatus({
@@ -81,7 +80,6 @@ class GameAccountService {
             });
         }
 
-        // 2. Kiểm tra đã được mua chưa
         if (account.status === 1 || account.buyerId) {
             throw new ErrorWithStatus({
                 message: "Tài khoản đã được mua",
@@ -89,7 +87,6 @@ class GameAccountService {
             });
         }
 
-        // 3. Lấy thông tin user
         const user = await userRespository.findById(userId);
         if (!user) {
             throw new ErrorWithStatus({
@@ -98,7 +95,6 @@ class GameAccountService {
             });
         }
 
-        // 4. Kiểm tra số dư
         if (user.balance < account.price) {
             throw new ErrorWithStatus({
                 message: `Số dư không đủ! Bạn cần ${account.price - user.balance} VND nữa`,
@@ -106,13 +102,10 @@ class GameAccountService {
             });
         }
 
-        // 5. Thực hiện mua
         const result = await gameAccountRepository.purchase(accountId, userId);
 
-        // 6. Trừ tiền user
         await userRespository.updateBalance(userId, user.balance - account.price);
 
-        // 7. Nếu có sellerId, cộng tiền cho người bán
         if (account.sellerId) {
             const seller = await userRespository.findById(account.sellerId);
             if (seller) {

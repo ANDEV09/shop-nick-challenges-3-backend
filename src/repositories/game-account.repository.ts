@@ -70,10 +70,10 @@ class GameAccountRepository {
             select: {
                 id: true,
                 price: true,
+                details: true,
                 description: true,
                 status: true,
                 thumb: true,
-                // KHÔNG select: accountName, password, buyerId, sellerId
             },
         });
 
@@ -114,7 +114,6 @@ class GameAccountRepository {
             orderBy: { createdAt: "desc" },
             select: {
                 id: true,
-                name: true,
                 accountName: true,
                 password: true,
                 price: true,
@@ -122,7 +121,6 @@ class GameAccountRepository {
                 thumb: true,
                 images: true,
                 details: true,
-                createdAt: true,
                 updatedAt: true,
             },
         });

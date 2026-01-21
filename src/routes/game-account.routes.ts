@@ -14,13 +14,17 @@ import { checkAdmin } from "~/middlewares/checkAdmin.middlewares";
 
 const gameAccountRouter = Router();
 
+// Lấy danh sách tài khoản đã mua của user (phải trước /:groupId)
+gameAccountRouter.get("/my-purchased", auth, gameAccountController.getMyPurchasedAccounts);
+
+// Lấy danh sách tài khoản đã đăng bán của seller
+gameAccountRouter.get("/my-selling", auth, gameAccountController.getMySellerAccounts);
+
 // get danh sách account theo group role user
 gameAccountRouter.get("/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
 
 // mua tài khoản
 gameAccountRouter.post("/:id/purchase", auth, gameAccountController.purchaseGameAccount);
-
-gameAccountRouter.get("/my-purchased", auth, gameAccountController.getMyPurchasedAccounts);
 
 // get one account
 gameAccountRouter.get("/detail/:id", validate(getOneAccountSchema), gameAccountController.getAccountDetail);
