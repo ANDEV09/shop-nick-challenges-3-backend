@@ -2,7 +2,6 @@ import { Router } from "express";
 import { TokenType } from "~/constants/enums";
 import * as authController from "~/controllers/users.controllers";
 import * as authMiddleware from "~/middlewares/auth.middlewares";
-import { auth } from "~/middlewares/auth.middlewares";
 import {
     changePasswordSchema,
     forgotPasswordSchema,
@@ -11,7 +10,6 @@ import {
     registerSchema,
     resetPasswordParamsSchema,
     resetPasswordSchema,
-    verifyEmailParamsSchema,
 } from "~/models/rules/auth.rules";
 import { validate } from "~/utils/validation";
 
@@ -21,7 +19,7 @@ const authRouter = Router();
 authRouter.post("/register", validate(registerSchema), authController.register);
 authRouter.post("/login", validate(loginSchema), authController.login);
 authRouter.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
-// authRouter.get("/verify-email/:token", validate(verifyEmailParamsSchema), authController.verifyEmail);
+
 authRouter.post(
     "/refresh-token",
     validate(refreshTokenSchema),
