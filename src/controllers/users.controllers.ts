@@ -8,12 +8,9 @@ import {
     RegisterRequestBody,
     ResetPasswordRequestBody,
     ResetPasswordRequestParams,
-    VerifyEmailRequestParams,
 } from "~/models/requests/user.request";
 import userService from "~/services/user.service";
 import { HTTP_STATUS } from "~/constants/httpStatus";
-import prisma from "~/configs/prisma";
-import { paginate } from "~/utils/pagination";
 
 export const register = async (
     req: Request<ParamsDictionary, any, RegisterRequestBody>,
@@ -88,17 +85,7 @@ export const resetPassword = async (
         return next(error);
     }
 };
-// export const verifyEmail = async (req: Request<VerifyEmailRequestParams>, res: Response, next: NextFunction) => {
-//     const { token } = req.params;
-//     try {
-//         await userService.verifyEmail(token);
-//         return res.status(HTTP_STATUS.OK).json({
-//             message: "Đã xác thực email thành công!",
-//         });
-//     } catch (error) {
-//         return next(error);
-//     }
-// };
+
 export const changePassword = async (
     req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
     res: Response,
@@ -127,6 +114,22 @@ export const refreshToken = async (
         return res.status(HTTP_STATUS.OK).json({
             message: "Cấp lại token mới thành công!",
             result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId as string;
+        const user = await userService.getProfile(userId);
+        if (!user) {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Không tìm thấy người dùng!" });
+        }
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy thông tin người dùng thành công!",
+            result: user,
         });
     } catch (error) {
         return next(error);
