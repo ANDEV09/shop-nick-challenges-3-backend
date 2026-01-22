@@ -23,6 +23,9 @@ gameAccountRouter.get("/my-selling", auth, gameAccountController.getMySellerAcco
 // get danh sách account theo group role user
 gameAccountRouter.get("/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
 
+// Admin: Lấy danh sách account chờ duyệt (status=2)
+gameAccountRouter.get("/admin/pending-accounts", checkAdmin, gameAccountController.getPendingAccountsAdmin);
+
 // mua tài khoản
 gameAccountRouter.post("/:id/purchase", auth, gameAccountController.purchaseGameAccount);
 

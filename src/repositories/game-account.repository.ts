@@ -80,6 +80,30 @@ class GameAccountRepository {
         return result;
     };
 
+    getPendingAccountsAdmin = async (params: { groupId?: string; page?: number; limit?: number }) => {
+        const { groupId, page, limit } = params;
+        const where: any = { status: 2 };
+        if (groupId) where.groupId = groupId;
+        return paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where,
+            orderBy: { createdAt: "desc" },
+            select: {
+                price: true,
+                details: true,
+                status: true,
+                thumb: true,
+                images: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+                sellerId: true,
+            },
+        });
+    };
+
     getAccountDetail = async (accountId: string) => {
         return prisma.gameAccounts.findUnique({
             where: { id: accountId },

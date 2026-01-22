@@ -131,6 +131,19 @@ class GameAccountService {
         return account;
     };
 
+    public getPendingAccountsAdmin = async (groupId?: string, page?: number, limit?: number) => {
+        if (groupId) {
+            const groupExists = await gameAccountRepository.findByGroupId(groupId);
+            if (!groupExists) {
+                throw new ErrorWithStatus({
+                    status: HTTP_STATUS.NOT_FOUND,
+                    message: "Group không tồn tại!",
+                });
+            }
+        }
+        return gameAccountRepository.getPendingAccountsAdmin({ groupId, page, limit });
+    };
+
     public getAccountsAdmin = async (groupId: string, page?: number, limit?: number) => {
         const groupExists = await gameAccountRepository.findByGroupId(groupId);
         if (!groupExists) {

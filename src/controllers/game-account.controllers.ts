@@ -200,6 +200,21 @@ export const getMySellerAccounts = async (req: Request, res: Response, next: Nex
     }
 };
 
+export const getPendingAccountsAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const groupId = req.query.groupId as string | undefined;
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+        const result = await gameAccountService.getPendingAccountsAdmin(groupId, page, limit);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách account chờ duyệt thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
 export const editGameAccountUser = async (
     req: Request<ParamsDictionary, any, EditGameAccountRequestBody>,
     res: Response,
