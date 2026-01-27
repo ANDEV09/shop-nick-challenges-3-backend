@@ -55,3 +55,16 @@ export const getOneAccountSchema = z.object({
         id: z.string().uuid("Account ID không hợp lệ"),
     }),
 });
+
+export const adminUpdateStatusAccountSchema = z.object({
+    body: z.object({
+        status: z
+            .number()
+            .int()
+            .refine((val) => [2, 3].includes(val), { message: "Status không hợp lệ" }),
+        password: z.string().min(1, "Mật khẩu mới không được để trống"),
+    }),
+    params: z.object({
+        id: z.string().uuid("ID account không hợp lệ"),
+    }),
+});

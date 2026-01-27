@@ -90,6 +90,7 @@ class GameAccountRepository {
             where,
             orderBy: { createdAt: "desc" },
             select: {
+                id: true,
                 price: true,
                 details: true,
                 status: true,
@@ -180,7 +181,6 @@ class GameAccountRepository {
             where: { id: accountId },
             select: {
                 id: true,
-                name: true,
                 price: true,
                 status: true,
                 thumb: true,
@@ -239,6 +239,18 @@ class GameAccountRepository {
                 updatedAt: true,
                 accountName: true,
                 buyerId: true,
+            },
+        });
+    };
+
+    adminUpdateStatusAccount = async (accountId: string, status: number, password: string) => {
+        return prisma.gameAccounts.update({
+            where: { id: accountId },
+            data: { status, password, updatedAt: new Date() },
+            select: {
+                id: true,
+                status: true,
+                updatedAt: true,
             },
         });
     };

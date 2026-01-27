@@ -191,6 +191,17 @@ class GameAccountService {
 
         return await gameAccountRepository.edit(id, data);
     };
+
+    public adminUpdateStatusAccount = async (accountId: string, status: number, password: string) => {
+        const account = await gameAccountRepository.findByAccountId(accountId);
+        if (!account) throw new ErrorWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: "Account không tồn tại!" });
+        if (account.status !== 0)
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: "Trạng thái Account không hợp lệ!",
+            });
+        return await gameAccountRepository.adminUpdateStatusAccount(accountId, status, password);
+    };
 }
 const gameAccountService = new GameAccountService();
 export default gameAccountService;

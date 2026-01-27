@@ -2,6 +2,7 @@ import { NextFunction, ParamsDictionary } from "express-serve-static-core";
 import { Request, Response } from "express";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 import {
+    AdminUpdateStatusAccountRequestBody,
     CreateGameAccountRequestBody,
     DelGameAccountRequestParams,
     EditGameAccountRequestBody,
@@ -229,6 +230,21 @@ export const editGameAccountUser = async (
             message: "Cập nhật account thành công!",
             result,
         });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const adminUpdateStatusAccount = async (
+    req: Request<ParamsDictionary, any, AdminUpdateStatusAccountRequestBody>,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const accountId = req.params.id;
+        const { status, password } = req.body;
+        const result = await gameAccountService.adminUpdateStatusAccount(accountId, status, password);
+        return res.status(HTTP_STATUS.OK).json({ message: "Cập nhật trạng thái và mật khẩu thành công!", result });
     } catch (error) {
         return next(error);
     }

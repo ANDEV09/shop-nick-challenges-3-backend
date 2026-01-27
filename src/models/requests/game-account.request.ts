@@ -4,6 +4,7 @@ import {
     editGameAccountSchema,
     gameAccountSchema,
     getGameAccountsSchema,
+    adminUpdateStatusAccountSchema,
 } from "~/models/rules/game-account.rules";
 
 export type CreateGameAccountRequestBody = z.infer<typeof gameAccountSchema>["body"];
@@ -13,3 +14,5 @@ export type EditGameAccountRequestBody = z.infer<typeof editGameAccountSchema>["
 export type DelGameAccountRequestParams = z.infer<typeof deleteGameAccountSchema>["params"];
 
 export type GetGameAccountsParams = z.infer<typeof getGameAccountsSchema>["params"];
+
+export type AdminUpdateStatusAccountRequestBody = z.infer<typeof adminUpdateStatusAccountSchema>["body"];
