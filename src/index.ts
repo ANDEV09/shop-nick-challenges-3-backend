@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import userRouter from "./routes/user.routes";
 import cors from "cors";
+import "./cronjobs/bank";
 
 import "dotenv/config"; // thêm cái này để có thể sử dụng biến môi trường (nếu k sẽ là underfined), import ở file này thì tất cả file con đều được áp dụng
 import { defaultErrorHandler } from "./middlewares/error.middlewares";
@@ -11,6 +12,7 @@ import { limiterMiddleware } from "./middlewares/common.middleware";
 import gameCategoryRouter from "~/routes/game-category.routes";
 import gameGroupRouter from "~/routes/game-group.routes";
 import gameAccountRouter from "~/routes/game-account.routes";
+import depositRouter from "./routes/deposit.routes";
 const app = express();
 const PORT = process.env.PORT || 8000;
 const allowedOrigins = ["http://localhost:3000"];
@@ -33,6 +35,7 @@ app.use("/users", userRouter);
 app.use("/game-categories", gameCategoryRouter);
 app.use("/game-groups", gameGroupRouter);
 app.use("/game-accounts", gameAccountRouter);
+app.use("/deposits", depositRouter);
 
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);

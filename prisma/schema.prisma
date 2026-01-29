@@ -26,6 +26,7 @@ model User {
   passwordHistories PasswordHistory[]
   seller     GameAccounts[]    @relation("seller_id")
   buyer   GameAccounts[]    @relation("buyer_id")
+  bankDeposits   BankDeposits[] 
 
   @@map("users")
 }
@@ -95,9 +96,25 @@ model GameAccounts {
   @@map("game_accounts")
 }
 
+model BankDeposits {
+  id                String   @id @default(uuid())
+  transactionId     String   @unique @map("transaction_id") @db.VarChar(255)
+  userId            String   @map("user_id") @db.VarChar(255)
+  amount            Int
+  balanceBefore     Int @map("balance_before")
+  balanceAfter      Int @map("balance_after")
+  note              String  @db.VarChar(255)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("bank_deposits")
+}
+
 enum Role {
   USER
   ADMIN
 }
-
+    
 

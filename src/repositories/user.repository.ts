@@ -38,6 +38,13 @@ class UserRepository {
         return result;
     };
 
+    updateUserBalance = async (userId: string, amount: number) => {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { balance: { increment: amount } },
+        });
+    };
+
     updateBalance = async (userId: string, newBalance: number) => {
         return prisma.user.update({
             where: { id: userId },
