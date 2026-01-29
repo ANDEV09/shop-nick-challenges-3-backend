@@ -109,7 +109,7 @@ class GameAccountService {
         if (account.sellerId) {
             const seller = await userRespository.findById(account.sellerId);
             if (seller) {
-                await userRespository.updateBalance(account.sellerId, seller.balance + account.price);
+                await userRespository.updateBalance(account.sellerId, seller.balance + (account.price / 100 * 80) );
             }
         }
         return result;
@@ -192,7 +192,12 @@ class GameAccountService {
         return await gameAccountRepository.edit(id, data);
     };
 
-    public adminUpdateStatusAccount = async (accountId: string, status: number, password: string) => {
+    public adminUpdateStatusAccount = async (
+        accountId: string,
+        status: number,
+        password?: string,
+        description?: string,
+    ) => {
         const account = await gameAccountRepository.findByAccountId(accountId);
         if (!account) throw new ErrorWithStatus({ status: HTTP_STATUS.NOT_FOUND, message: "Account không tồn tại!" });
         if (account.status !== 0)
@@ -200,7 +205,7 @@ class GameAccountService {
                 status: HTTP_STATUS.BAD_REQUEST,
                 message: "Trạng thái Account không hợp lệ!",
             });
-        return await gameAccountRepository.adminUpdateStatusAccount(accountId, status, password);
+        return await gameAccountRepository.adminUpdateStatusAccount(accountId, status, password, description);
     };
 }
 const gameAccountService = new GameAccountService();

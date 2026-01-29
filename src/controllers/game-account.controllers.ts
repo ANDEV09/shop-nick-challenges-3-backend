@@ -242,8 +242,8 @@ export const adminUpdateStatusAccount = async (
 ) => {
     try {
         const accountId = req.params.id;
-        const { status, password } = req.body;
-        const result = await gameAccountService.adminUpdateStatusAccount(accountId, status, password);
+        const { status, password, description } = req.body;
+        const result = await gameAccountService.adminUpdateStatusAccount(accountId, status, password, description);
         return res.status(HTTP_STATUS.OK).json({ message: "Cập nhật trạng thái và mật khẩu thành công!", result });
     } catch (error) {
         return next(error);

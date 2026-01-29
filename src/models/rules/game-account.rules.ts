@@ -62,7 +62,8 @@ export const adminUpdateStatusAccountSchema = z.object({
             .number()
             .int()
             .refine((val) => [2, 3].includes(val), { message: "Status không hợp lệ" }),
-        password: z.string().min(1, "Mật khẩu mới không được để trống"),
+        password: z.string().optional(),
+        description: z.string().optional(),
     }),
     params: z.object({
         id: z.string().uuid("ID account không hợp lệ"),

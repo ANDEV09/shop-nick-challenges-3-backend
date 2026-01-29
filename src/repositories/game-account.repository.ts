@@ -82,7 +82,7 @@ class GameAccountRepository {
 
     getPendingAccountsAdmin = async (params: { groupId?: string; page?: number; limit?: number }) => {
         const { groupId, page, limit } = params;
-        const where: any = { status: 2 };
+        const where: any = { status: 0 };
         if (groupId) where.groupId = groupId;
         return paginate<any>(prisma.gameAccounts, {
             page,
@@ -101,6 +101,7 @@ class GameAccountRepository {
                 accountName: true,
                 password: true,
                 sellerId: true,
+                description: true,
             },
         });
     };
@@ -186,6 +187,7 @@ class GameAccountRepository {
                 thumb: true,
                 images: true,
                 details: true,
+                description: true,
                 createdAt: true,
                 updatedAt: true,
                 accountName: true,
@@ -235,6 +237,8 @@ class GameAccountRepository {
                 price: true,
                 status: true,
                 thumb: true,
+                details: true,
+                description: true,
                 createdAt: true,
                 updatedAt: true,
                 accountName: true,
@@ -243,14 +247,15 @@ class GameAccountRepository {
         });
     };
 
-    adminUpdateStatusAccount = async (accountId: string, status: number, password: string) => {
+    adminUpdateStatusAccount = async (accountId: string, status: number, password?: string, description?: string) => {
         return prisma.gameAccounts.update({
             where: { id: accountId },
-            data: { status, password, updatedAt: new Date() },
+            data: { status, password, description, updatedAt: new Date() },
             select: {
                 id: true,
                 status: true,
                 updatedAt: true,
+                description: true,
             },
         });
     };
