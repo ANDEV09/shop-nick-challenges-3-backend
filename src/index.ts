@@ -40,3 +40,6 @@ app.use("/deposits", depositRouter);
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);
 
+app.listen(PORT, () => {
+    console.log(`Server successfully launched on PORT ${PORT}!`);
+});
