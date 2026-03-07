@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import userRouter from "./routes/user.routes";
 import cors from "cors";
 import "./cronjobs/bank";
+import https from "https";
+import fs from "fs";
 
 import "dotenv/config"; // thêm cái này để có thể sử dụng biến môi trường (nếu k sẽ là underfined), import ở file này thì tất cả file con đều được áp dụng
 import { defaultErrorHandler } from "./middlewares/error.middlewares";
@@ -40,6 +42,13 @@ app.use("/deposits", depositRouter);
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);
 
-app.listen(PORT, () => {
-    console.log(`Server successfully launched on PORT ${PORT}!`);
+// Đọc file chứng chỉ và key
+const sslOptions = {
+    key: fs.readFileSync("ssl/key.pem"),
+    cert: fs.readFileSync("ssl/cert.pem"),
+};
+
+// Khởi tạo server HTTPS
+https.createServer(sslOptions, app).listen(PORT, () => {
+    console.log(`HTTPS server running on PORT ${PORT}`);
 });
